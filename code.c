@@ -5,7 +5,6 @@
 #include <stdbool.h>
 
 #define BLOCK_SIZE 10
-#define END_OF_STRING '\0'
 
 
 void
@@ -47,7 +46,10 @@ input()
     char ch_three = 'a';
     char ch_four = 'a';
 
-    while(ch_one!='F'||ch_two!='i'||ch_three!='n'||ch_four!='.')
+    while(   ch_one != 'F' 
+          || ch_two != 'i' 
+          || ch_three != 'n' 
+          || ch_four != '.')
     {
         text[k++] = ch;
 
@@ -66,7 +68,7 @@ input()
 
     }
 
-    text[k] = END_OF_STRING;
+    text[k] = '\0';
     return text;
 
 }
@@ -93,7 +95,7 @@ split_text(char *text, int *k)
 
         }
         
-        sentence = strtok(NULL,"\n");
+        sentence = strtok(NULL, "\n");
     }
     
     return text_done;
