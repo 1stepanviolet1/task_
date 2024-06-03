@@ -2,18 +2,42 @@
 #include <stdlib.h>
 #include <string.h>
 #include <regex.h>
+#include <stdbool.h>
+
 #define BLOCK_SIZE 10
 #define END_OF_STRING '\0'
+
+
+void
+error(const char *_msg)
+{
+    fprintf(stderr, _msg);
+    exit(0);
+
+}
+
+void
+error_if(bool _cond, const char *_msg)
+{
+    if (_cond)
+        error(_msg);
+
+}
+
+void *
+allocator(void *_old, size_t _n, size_t _size)
+{
+    void *_ptr = realloc(_old, _n * _size);
+    error_if(_ptr == NULL, "ERROR: badalloc");
+
+}
+
 
 char * 
 input()
 {
     int capacity = BLOCK_SIZE;
-    char *text = malloc(capacity*sizeof(char));
-    if(text==NULL){
-        printf("ERROR: couldn't allocate memory\n");
-        return 0;
-    }
+    char *text = (char*)allocator(NULL, capacity, sizeof(char));
 
     int k = 0;
 
@@ -30,13 +54,8 @@ input()
         if (k == capacity-1)
         {
             capacity += BLOCK_SIZE;
-            text = (char*)realloc(text, capacity*sizeof(char));
-            
-            if(text == NULL)
-            {
-                printf("ERROR: could not find the memory! And it's just the beginning...\n");
-                return 0;
-            }
+            text = (char*)allocator(text, capacity, sizeof(char));
+
         }
         
         ch_one = ch_two;
@@ -44,6 +63,7 @@ input()
         ch_three = ch_four;
         ch_four = ch;
         ch = getchar();
+
     }
 
     text[k] = END_OF_STRING;
@@ -55,39 +75,22 @@ char **
 split_text(char *text, int *k)
 {
     int capacity = BLOCK_SIZE;
-    char **text_done = (char**)malloc(capacity*sizeof(char*));
-    
-    if(text_done == NULL)
-    {
-        printf("ERROR: No memory left! Buy me Ginkoum, please!!");
-        return 0;
-    }
+    char **text_done = (char**)allocator(NULL, capacity, sizeof(char*));
 
     char *sentence = strtok(text, "\n");
 
     while(sentence != NULL)
     {
         int sent_len = strlen(sentence);
-        text_done[*k] = malloc((sent_len+1)*sizeof(char));
-        
-        if(text_done[*k] == NULL)
-        {
-            printf("ERROR: Sorry, I don't have enough memory:(\n");
-            return 0;                    
-        }
+        text_done[*k] = (char**)allocator(NULL, sent_len+1, sizeof(char));
 
         strcpy(text_done[(*k)++], sentence);
         
         if(*k == capacity-1)
         {
             capacity += BLOCK_SIZE;
-            text_done = (char**)realloc(text_done, capacity*sizeof(char*));
-            
-            if(text_done == NULL)
-            {
-                printf("ERROR: Oh no! Could not find the memory!\n");
-                return 0;
-            }
+            text_done = (char**)allocator(text_done, capacity, sizeof(char*));
+
         }
         
         sentence = strtok(NULL,"\n");
@@ -102,17 +105,14 @@ int main(int argc, char **argv)
     char *text = input();
     int k = 0;
 
-    char** text_done = split_text(text, &k);
-    char* regexString = "(([A-z]*):\\/\\/)?(www.)?([A-z0-9]+([_\\-\\.]+[A-z]+)+)\\/((([A-z]*)\\/)*)([A-z0-9_\\-]+\\.[A-z0-9_\\-]+)";
+    char **text_done = split_text(text, &k);
+    char *regexString = "(([A-z]*):\\/\\/)?(www.)?([A-z0-9]+([_\\-\\.]+[A-z]+)+)\\/((([A-z]*)\\/)*)([A-z0-9_\\-]+\\.[A-z0-9_\\-]+)";
 
     regex_t regexCompiled;
     regmatch_t groupArray[BLOCK_SIZE];
 
-    if (regcomp(&regexCompiled, regexString, REG_EXTENDED))
-    {
-        printf("Can't compile regular expression:(\n");
-        return 0;
-    };
+    error_if(regcomp(&regexCompiled, regexString, REG_EXTENDED),
+             "ERROR: Could not compile regular expression\n");
 
     for(int index = 0; index < k; index++)
     {
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
             printf(" - ");
 
             i = 9;
-            for(int j = groupArray[i].rm_so;j<groupArray[i].rm_eo;j++)
+            for(int j = groupArray[i].rm_so; j < groupArray[i].rm_eo; j++)
                 printf("%c",text_done[index][j]);
             
             printf("\n");
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
 
     free(text);
     
-    for(int i = 0;i<k;i++)
+    for(int i = 0; i < k; i++)
         free(text_done[i]);
     
     free(text_done);
