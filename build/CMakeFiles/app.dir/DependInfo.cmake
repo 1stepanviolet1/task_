@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/data/data/com.termux/files/home/task_/src/main.cpp" "CMakeFiles/app.dir/src/main.cpp.o" "gcc" "CMakeFiles/app.dir/src/main.cpp.o.d"
+  "/data/data/com.termux/files/home/task_/src/manager.cpp" "CMakeFiles/app.dir/src/manager.cpp.o" "gcc" "CMakeFiles/app.dir/src/manager.cpp.o.d"
   "/data/data/com.termux/files/home/task_/src/user.cpp" "CMakeFiles/app.dir/src/user.cpp.o" "gcc" "CMakeFiles/app.dir/src/user.cpp.o.d"
   )
 

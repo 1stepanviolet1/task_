@@ -1,13 +1,17 @@
 #include <iostream>
 
-#include "user.h"
+#include "manager.h"
+
 
 int main()
 {
-    User u1("user1", "pwd1");
-    User u2("user2", "pwd2");
+    Manager_of_users manager;
+    
+    manager.new_user("user1", "pwd1");
+    manager.new_user("user2", "pwd2");
 
-    std::cout << u1.username() << " " << u2.pwd() << std::endl;
+    std::cout << manager.get(1).username() << std::endl;
+    std::cout << manager.size() << std::endl;
 
     return 0;
 
