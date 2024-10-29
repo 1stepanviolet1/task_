@@ -1,6 +1,9 @@
 
 
 def non_cyclic_right_shift(number: int, shift: int = 1) -> int:
+    if number == 0:
+        return 0
+
     if number < 0:
         raise ValueError("Число должно быть неотрицательным")
     
@@ -15,6 +18,9 @@ def grey_code(x: int) -> int:
 
 
 def reverce_grey_code(x: int) -> int:
+    if x == 0:
+        return 0
+
     if x < 0:
         raise ValueError("Число должно быть неотрицательным")
     
@@ -34,6 +40,8 @@ def reverce_grey_code(x: int) -> int:
 
 
 if __name__ == '__main__':
-    print(reverce_grey_code(30))
+    for i in range(8):
+        print(f"{bin(grey_code(i))[2:]:0>2}")
+
     # print()
 
