@@ -1,0 +1,3 @@
+[submodule "uml"]
+	path = uml
+	url = git@github.com:1stepanviolet1/uml.git
